@@ -3,12 +3,12 @@
 #add options like halfmarathon, marathon, negativesplit - use a proper library
 
 import sys
-#import argparse
+import argparse
 
 script_name, distance, time = sys.argv
 
-#parser = argparse.ArgumentParser()
-#parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.parse_args()
 
 
 #returns time in seconds
