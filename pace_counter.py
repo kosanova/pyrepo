@@ -1,6 +1,15 @@
 #!/usr/bin/python
 
-#add options like halfmarathon, marathon, negativesplit - use a proper library
+# TODO list
+#
+# validate input - accept possible formats: 1:34:37, 45:38 etc
+# implement option negativesplit
+# learn how to parse an xml file in the best way
+# parse several tcx files, think of chart framework to visualize the progress (all of them already downloaded into dropbox)
+# https://tapiriik.com/
+# divide project, maybe OOP?
+#
+# last and the hardest task - try to login into endomondo and download all tcx files
 
 import argparse
 
@@ -21,7 +30,10 @@ else:
     
 time = args.time
 
-#returns time in seconds
+def validateInput(str_time):
+    pass
+
+# returns time in seconds
 def parseTime(str_time):
     delimiter_right_idx = str_time.rfind(':')
     delimiter_left_idx = str_time.find(':')
@@ -32,11 +44,11 @@ def parseTime(str_time):
 
     return int(hours)*60*60 + int(minutes)*60 + int(seconds)
 
-#returns pace time in seconds  
+# returns pace time in seconds  
 def countPace():
     return int(float(parseTime(time)) / distance)
 
-#returns formatted pace time
+# returns formatted pace time
 def convertTime(ts):
     minutes = str(ts / 60)
     seconds = str(ts % 60)
