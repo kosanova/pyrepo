@@ -2,14 +2,14 @@
 
 # TODO list
 #
-# validate input - accept possible formats: 1:34:37, 45:38 etc
+# time as a tuple or sth?
 # implement option negativesplit
 # learn how to parse an xml file in the best way
 # parse several tcx files, think of chart framework to visualize the progress (all of them already downloaded into dropbox)
 # https://tapiriik.com/
-# divide project, maybe OOP?
+# refactor project, maybe OOP?
 #
-# last and the hardest task - try to login into endomondo and download all tcx files
+# last and the hardest task - try to login into endomondo and download all tcx files OR just navigate through the site and store time and distance info
 
 import argparse
 
@@ -22,43 +22,48 @@ parser.add_argument("-hm", "--halfmarathon", help = "The half-marathon distance"
 args = parser.parse_args()
 
 if args.marathon:
-    distance = 42.195
+    DISTANCE = 42.195
 elif args.halfmarathon:
-    distance = 21.0975
+    DISTANCE = 21.0975
 else:
-    distance = args.distance
+    DISTANCE = args.distance
     
-time = args.time
-
-def validateInput(str_time):
-    pass
+TIME = args.time
 
 # returns time in seconds
-def parseTime(str_time):
+def parse_time(str_time):
+    
     delimiter_right_idx = str_time.rfind(':')
     delimiter_left_idx = str_time.find(':')
-    
-    hours = str_time[:delimiter_left_idx]
-    minutes = str_time[delimiter_left_idx+1:delimiter_right_idx]
-    seconds = str_time[delimiter_right_idx+1:]
 
+    if delimiter_right_idx != delimiter_left_idx:
+        hours = str_time[:delimiter_left_idx]
+        minutes = str_time[delimiter_left_idx+1:delimiter_right_idx]
+    else:
+        hours = 0
+        minutes = str_time[:delimiter_right_idx]
+
+    seconds = str_time[delimiter_right_idx+1:]
+    
     return int(hours)*60*60 + int(minutes)*60 + int(seconds)
 
-# returns pace time in seconds  
-def countPace():
-    return int(float(parseTime(time)) / distance)
-
 # returns formatted pace time
-def convertTime(ts):
+def convert_time(ts):
     minutes = str(ts / 60)
     seconds = str(ts % 60)
     if int(seconds) < 10:
         seconds = "0" + seconds
     return minutes + ":" + seconds
 
+# returns pace time in seconds  
+def count_pace():
+    t = parse_time(TIME)
+    return int(float(t) / DISTANCE)
+
 def summary():
-    print "Distance:", str(distance) + "km"
-    print "Time:", time
-    print "Pace:", convertTime(countPace())
+    print "Distance:", str(DISTANCE) + "km"
+    print "Time:", TIME
+    pace = count_pace()
+    print "Pace:", convert_time(pace)
 
 summary()
