@@ -21,7 +21,7 @@ parser.add_argument("-d", "--distance", help = "The distance to run", type = flo
 parser.add_argument("time", help = "Goal time, possible formats: hh:mm:ss, mm:ss")
 parser.add_argument("-m", "--marathon", help = "The marathon distance", action = "store_true")
 parser.add_argument("-hm", "--halfmarathon", help = "The half-marathon distance", action = "store_true")
-parser.add_argument("-n", "--negativesplit", help = "Print out the negative split strategy", action = "store_true")
+parser.add_argument("-n", "--negativesplit", help = "Print out the negative split strategy")#, action = "store_true")
 args = parser.parse_args()
 
 
@@ -32,6 +32,8 @@ elif args.halfmarathon:
 else:
     DISTANCE = args.distance
 
+if args.negativesplit:
+    FIRST_LAP = args.negativesplit
     
 TIME = args.time
 
@@ -46,7 +48,7 @@ def parse_time(str_time):
         return int(t[0]) * 60 + int(t[1])
     else:
         print "Wrong time format!\n"
-        return -1 
+        exit() 
 
 # returns formatted pace time
 def convert_time(ts):
@@ -63,26 +65,40 @@ def count_pace():
 
 def negative_split():
     # for testing, later as an argument
-    first_lap = 5 * 60
+    first_lap = parse_time(FIRST_LAP)
+    print "First lap", first_lap
     fake_time = first_lap * DISTANCE # 50
     print "Fake time", fake_time
-    last_lap = (parse_time(TIME) - first_lap) / DISTANCE # (45 - 5) / 10 = 4
+    last_lap = (parse_time(TIME) - first_lap) / (DISTANCE - 1) # (45 - 5) / 10 = 4
     print "Last lap", last_lap
     diff = (first_lap - last_lap) / (DISTANCE - 1) # 6.6667
     print "Diff", diff
     table = [first_lap]
-    for i in range (1,10):
+    for i in range (1,int(DISTANCE)):
         first_lap -= diff
         table.append(first_lap)
 
-    print table;
+    return table;
 
+def parse_pace_table(table):
+    suma = 0
+    i = 0
+    for t in table:
+        t = int(t)
+        #print t
+        i += 1
+        print i, '\t', convert_time(t)
+    print parse_time(TIME)
+    print float(sum(table))
+    print "Deviation", parse_time(TIME) - (float(sum(table)))
+    
 def summary():
     print "Distance:", str(DISTANCE) + "km"
     print "Time:", TIME
     pace = count_pace()
     print "Pace:", convert_time(pace)
     if args.negativesplit:
-        print "Pace strategy:", negative_split()
+       # t = negative_split()
+        print "Pace strategy:\n", parse_pace_table(negative_split())#negative_split()
 
 summary()
