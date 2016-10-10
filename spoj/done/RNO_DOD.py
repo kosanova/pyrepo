@@ -7,8 +7,7 @@ results = []
 while(t > 0 and t < 100):
     t -= 1
     
-    n = raw_input()
-    n = int(n)
+    n = int(raw_input())
     
     nums = raw_input()
     table = map(int, nums.split(' '))
